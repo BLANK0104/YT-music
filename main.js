@@ -248,7 +248,7 @@ function createCustomMenu() {
                                 <head><title>About</title></head>
                                 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; padding: 40px; text-align: center; background: #0f0f0f; color: white;">
                                     <h2>YouTube Music Desktop</h2>
-                                    <p>Version 1.0.0</p>
+                                    <p>Version ${require('./package.json').version}</p>
                                     <p>Enhanced desktop experience for YouTube Music with advanced features</p>
                                     <br>
                                     <p><strong>Features:</strong></p>

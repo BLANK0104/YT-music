@@ -114,30 +114,37 @@ jobs:
         tag_name: "v${{ steps.package-version.outputs.version }}"
         name: "YouTube Music Desktop v${{ steps.package-version.outputs.version }}"
         body: |
-          🎵 **YouTube Music Desktop - Automatic Release**
+          🎵 **YouTube Music Desktop - v${{ steps.package-version.outputs.version }}**
           
-          **Download:** `YouTube Music Desktop Setup 1.0.0.exe`
+          **Download:** `YouTube Music Desktop Setup ${{ steps.package-version.outputs.version }}.exe`
           
           ## ✨ Features
           - 🚫 **Complete ad blocking** - Network-level and CSS-based
           - 🎵 **Full YouTube Music experience** with Google login
           - 🖥️ **System tray integration** - Background playback
-          - 🎛️ **Built-in 10-band equalizer**
-          - ✨ **Glass morphism UI** with beautiful animations
-          - ⚙️ **Advanced settings** and customization
+          - 🎛️ **Advanced custom menu** with all YouTube Music features
+          - ⚙️ **Comprehensive settings** and customization
           - 🎹 **Global media key support**
-          - 🔒 **Secure and private** - No data tracking
+          - � **Mini player mode**
+          - 🔔 **Desktop notifications**
+          - �🔒 **Secure and private** - No data tracking
           
           ## 🚀 How to Use
           1. Download the `.exe` file below
           2. Run the installer
           3. Sign in to your YouTube account
-          4. Enjoy ad-free music!
+          4. Enjoy ad-free music with enhanced features!
           
-          ## 🆕 What's New
+          ## 🆕 What's New in v${{ steps.package-version.outputs.version }}
           - Latest build from commit: ${{ github.sha }}
           - Built automatically on: ${{ github.event.head_commit.timestamp }}
           - Commit message: "${{ github.event.head_commit.message }}"
+          
+          ## ⚙️ Settings Access
+          - **Settings Button**: Top-right corner of the app
+          - **Menu Bar**: YouTube Music → Settings
+          - **System Tray**: Right-click tray icon → Settings
+          - **Keyboard**: `Ctrl+,` (Windows) or `Cmd+,` (Mac)
           
           ---
           
