@@ -16,12 +16,9 @@
     "build:win": "electron-builder --win",
     "build:mac": "electron-builder --mac",
     "build:linux": "electron-builder --linux",
-    "build:portable": "electron-builder --win portable",
-    "build:all": "electron-builder --win --mac --linux",
     "dist": "npm run build",
     "pack": "electron-builder --dir",
-    "postinstall": "electron-builder install-app-deps",
-    "release": "electron-builder --publish=never"
+    "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [
     "youtube-music",
@@ -32,119 +29,46 @@
     "streaming"
   ],
   "dependencies": {
+    "electron": "^37.2.4",
     "electron-store": "^8.2.0",
     "electron-updater": "^6.6.2"
   },
   "devDependencies": {
-    "electron": "^37.2.4",
     "electron-builder": "^26.0.12",
-    "electron-icon-builder": "^2.0.1",
-    "sharp": "^0.34.3"
+    "electron-icon-builder": "^2.0.1"
   },
   "build": {
-    "appId": "com.ytmusic.desktop",
+    "appId": "com.yourcompany.youtube-music-desktop",
     "productName": "YouTube Music Desktop",
     "directories": {
-      "output": "dist",
-      "buildResources": "assets"
+      "output": "dist"
     },
     "files": [
       "main.js",
       "preload.js",
       "index.html",
-      "settings.html",
-      "assets/512px-Youtube_Music_icon.svg.png",
+      "assets/**/*",
       "package.json"
     ],
-    "extraResources": [
-      {
-        "from": "assets/",
-        "to": "assets/",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
     "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ],
-      "icon": "assets/512px-Youtube_Music_icon.svg.png",
-      "requestedExecutionLevel": "asInvoker",
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "target": "nsis",
+      "icon": "assets/icon.ico"
     },
     "mac": {
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ],
-      "icon": "assets/512px-Youtube_Music_icon.svg.png",
-      "category": "public.app-category.music",
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "target": "dmg",
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.music"
     },
     "linux": {
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "tar.gz",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ],
-      "icon": "assets/512px-Youtube_Music_icon.svg.png",
-      "category": "Audio",
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "target": "AppImage",
+      "icon": "assets/icon.png",
+      "category": "Audio"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "YouTube Music Desktop",
-      "include": "build/installer.nsh"
-    },
-    "portable": {
-      "artifactName": "${productName}-${version}-Portable.${ext}"
-    },
-    "publish": {
-      "provider": "github",
-      "owner": "yourusername",
-      "repo": "youtube-music-desktop"
-    },
-    "compression": "maximum",
-    "npmRebuild": false
+      "createStartMenuShortcut": true
+    }
   }
 }
