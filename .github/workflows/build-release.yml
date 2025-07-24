@@ -8,6 +8,12 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+# Add permissions for GitHub token
+permissions:
+  contents: write
+  discussions: write
+  pull-requests: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -39,7 +45,7 @@ jobs:
         name: windows-builds
         path: |
           dist/*.exe
-          dist/*.msi
+          dist/*.blockmap
         retention-days: 30
         
   release:
@@ -58,11 +64,11 @@ jobs:
         path: dist/
         
     - name: Create Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: |
           dist/*.exe
-          dist/*.msi
+          dist/*.blockmap
         generate_release_notes: true
         draft: false
         prerelease: false
@@ -103,14 +109,14 @@ jobs:
         
     - name: Create automatic release
       if: steps.check-release.outputs.exists == 'false'
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: "v${{ steps.package-version.outputs.version }}"
         name: "YouTube Music Desktop v${{ steps.package-version.outputs.version }}"
         body: |
           🎵 **YouTube Music Desktop - Automatic Release**
           
-          **Download:** `YouTube Music Desktop-${{ steps.package-version.outputs.version }}-Portable.exe`
+          **Download:** `YouTube Music Desktop Setup 1.0.0.exe`
           
           ## ✨ Features
           - 🚫 **Complete ad blocking** - Network-level and CSS-based
@@ -124,7 +130,7 @@ jobs:
           
           ## 🚀 How to Use
           1. Download the `.exe` file below
-          2. Run it (no installation required)
+          2. Run the installer
           3. Sign in to your YouTube account
           4. Enjoy ad-free music!
           
@@ -136,11 +142,11 @@ jobs:
           ---
           
           **Platform:** Windows 10/11 (x64)  
-          **Size:** ~150MB portable executable  
-          **No installation required** - Just download and run!
+          **Size:** ~150MB installer  
+          **Easy installation** - Just download and run!
         files: |
           dist/*.exe
-          dist/*.msi
+          dist/*.blockmap
         generate_release_notes: false
         draft: false
         prerelease: false
