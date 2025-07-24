@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Music Mini Player</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(45, 45, 45, 0.95));
+            backdrop-filter: blur(20px);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        
+        .mini-player {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+        }
+        
+        .album-art {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: #333;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+        }
+        
+        .track-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .track-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .track-artist {
+            font-size: 10px;
+            color: #bbb;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+        
+        .control-btn {
+            width: 25px;
+            height: 25px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 0, 0, 1);
+        }
+        
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background: #ff6b6b;
+            transition: width 0.1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="mini-player">
+        <div class="album-art" id="albumArt"></div>
+        <div class="track-info">
+            <div class="track-title" id="trackTitle">No track playing</div>
+            <div class="track-artist" id="trackArtist">Unknown Artist</div>
+        </div>
+        <div class="controls">
+            <button class="control-btn" id="prevBtn">⏮</button>
+            <button class="control-btn" id="playPauseBtn">▶</button>
+            <button class="control-btn" id="nextBtn">⏭</button>
+        </div>
+    </div>
+    <button class="close-btn" id="closeBtn">×</button>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <script>
+        // Make window draggable
+        let isDragging = false;
+        let dragOffset = { x: 0, y: 0 };
+        
+        document.addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('control-btn') || e.target.id === 'closeBtn') return;
+            isDragging = true;
+            dragOffset.x = e.clientX;
+            dragOffset.y = e.clientY;
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.clientX - dragOffset.x;
+            const deltaY = e.clientY - dragOffset.y;
+            window.electronAPI?.moveWindow?.(deltaX, deltaY);
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        
+        // Control buttons
+        document.getElementById('playPauseBtn').addEventListener('click', () => {
+            window.electronAPI?.playPause?.();
+        });
+        
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            window.electronAPI?.nextTrack?.();
+        });
+        
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            window.electronAPI?.previousTrack?.();
+        });
+        
+        document.getElementById('closeBtn').addEventListener('click', () => {
+            window.close();
+        });
+        
+        // Update track info periodically
+        function updateTrackInfo() {
+            if (window.electronAPI?.getCurrentTrack) {
+                window.electronAPI.getCurrentTrack().then(track => {
+                    if (track && track.title) {
+                        document.getElementById('trackTitle').textContent = track.title;
+                        document.getElementById('trackArtist').textContent = track.artist || 'Unknown Artist';
+                        
+                        if (track.thumbnail) {
+                            document.getElementById('albumArt').style.backgroundImage = `url(${track.thumbnail})`;
+                        }
+                        
+                        // Update play/pause button
+                        const playPauseBtn = document.getElementById('playPauseBtn');
+                        playPauseBtn.textContent = track.isPlaying ? '⏸' : '▶';
+                    }
+                }).catch(console.error);
+            }
+        }
+        
+        // Update every second
+        setInterval(updateTrackInfo, 1000);
+        updateTrackInfo();
+    </script>
+</body>
+</html>

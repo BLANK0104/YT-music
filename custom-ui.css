@@ -1,0 +1,83 @@
+/* Custom UI enhancements for YouTube Music Desktop App */
+
+/* Settings button container */
+.yt-music-settings-button {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.yt-music-settings-button:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+.yt-music-settings-button:active {
+    transform: translateY(0);
+}
+
+/* Settings icon */
+.yt-music-settings-icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+/* Mini player button */
+.yt-music-mini-player-button {
+    position: fixed;
+    top: 55px;
+    right: 15px;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.yt-music-mini-player-button:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Hide any potential YouTube ads with safe targeting */
+ytmusic-premium-upsell-banner,
+.ytmusic-premium-upsell-banner,
+.ytmusic-banner-promo-renderer,
+.advertisement-shelf-renderer {
+    display: none !important;
+}
+
+/* Improve overall visual consistency */
+body {
+    --custom-accent-color: #4ecdc4;
+}
