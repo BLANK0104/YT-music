@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';">
+    <title>Settings - YouTube Music Desktop</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .settings-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 300;
+        }
+
+        .setting-group {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .setting-group h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #4ecdc4;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .setting-label {
+            flex: 1;
+        }
+
+        .setting-label h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .setting-label p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.7;
+            line-height: 1.4;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.3);
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .range-slider {
+            width: 100px;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            cursor: pointer;
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            cursor: pointer;
+            border: none;
+        }
+
+        .eq-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            height: 120px;
+            margin: 20px 0;
+        }
+
+        .eq-band {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40px;
+        }
+
+        .eq-slider {
+            writing-mode: bt-lr;
+            -webkit-appearance: slider-vertical;
+            width: 6px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            border-radius: 3px;
+        }
+
+        .eq-label {
+            font-size: 10px;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .btn.secondary {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <h1>⚙️ Settings</h1>
+
+        <div class="setting-group">
+            <h3>🎵 Playback</h3>
+            
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Hardware Acceleration</h4>
+                    <p>Enable GPU acceleration for better performance</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="hardwareAcceleration">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Background Audio</h4>
+                    <p>Keep playing music when window is minimized</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="backgroundAudio" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Audio Quality</h4>
+                    <p>Higher quality uses more bandwidth</p>
+                </div>
+                <input type="range" class="range-slider" id="audioQuality" min="1" max="5" value="3">
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h3>🖥️ Interface</h3>
+            
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Minimize to Tray</h4>
+                    <p>Hide window to system tray instead of taskbar</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="minimizeToTray" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Start Minimized</h4>
+                    <p>Start the app in the system tray</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="startMinimized">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Glass Effects</h4>
+                    <p>Enable translucent backgrounds and blur effects</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="glassEffects" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h3>🎛️ Equalizer</h3>
+            
+            <div class="eq-container">
+                <div class="eq-band">
+                    <input type="range" class="eq-slider" id="eq-32" min="-12" max="12" value="0" orient="vertical">
+                    <div class="eq-label">32Hz</div>
+                </div>
+                <div class="eq-band">
+                    <input type="range" class="eq-slider" id="eq-64" min="-12" max="12" value="0" orient="vertical">
+                    <div class="eq-label">64Hz</div>
+                </div>
+                <div class="eq-band">
+                    <input type="range" class="eq-slider" id="eq-125" min="-12" max="12" value="0" orient="vertical">
+                    <div class="eq-label">125Hz</div>
+                </div>
+                <div class="eq-band">
+                    <input type="range" class="eq-slider" id="eq-250" min="-12" max="12" value="0" orient="vertical">
+                    <div class="eq-label">250Hz</div>
+                </div>
+                <div class="eq-band">
+                    <input type="range" class="eq-slider" id="eq-500" min="-12" max="12" value="0" orient="vertical">
+                    <div class="eq-label">500Hz</div>
+                </div>
+                <div class="eq-band">
+                    <input type="range" class="eq-slider" id="eq-1k" min="-12" max="12" value="0" orient="vertical">
+                    <div class="eq-label">1kHz</div>
+                </div>
+                <div class="eq-band">
+                    <input type="range" class="eq-slider" id="eq-2k" min="-12" max="12" value="0" orient="vertical">
+                    <div class="eq-label">2kHz</div>
+                </div>
+                <div class="eq-band">
+                    <input type="range" class="eq-slider" id="eq-4k" min="-12" max="12" value="0" orient="vertical">
+                    <div class="eq-label">4kHz</div>
+                </div>
+                <div class="eq-band">
+                    <input type="range" class="eq-slider" id="eq-8k" min="-12" max="12" value="0" orient="vertical">
+                    <div class="eq-label">8kHz</div>
+                </div>
+                <div class="eq-band">
+                    <input type="range" class="eq-slider" id="eq-16k" min="-12" max="12" value="0" orient="vertical">
+                    <div class="eq-label">16kHz</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn secondary" onclick="resetSettings()">Reset to Default</button>
+            <button class="btn" onclick="saveSettings()">Save Changes</button>
+        </div>
+    </div>
+
+    <script>
+        // Load current settings
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Load all settings from store
+            const settings = {
+                hardwareAcceleration: await window.electronAPI.getSetting('hardwareAcceleration', true),
+                minimizeToTray: await window.electronAPI.getSetting('minimizeToTray', true),
+                startMinimized: await window.electronAPI.getSetting('startMinimized', false),
+                glassEffects: await window.electronAPI.getSetting('glassEffects', true),
+                backgroundAudio: await window.electronAPI.getSetting('backgroundAudio', true),
+                audioQuality: await window.electronAPI.getSetting('audioQuality', 3)
+            };
+
+            // Apply settings to UI
+            Object.keys(settings).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = settings[key];
+                    } else {
+                        element.value = settings[key];
+                    }
+                }
+            });
+
+            // Load equalizer settings
+            const eqBands = ['32', '64', '125', '250', '500', '1k', '2k', '4k', '8k', '16k'];
+            eqBands.forEach(async band => {
+                const value = await window.electronAPI.getSetting(`eq-${band}`, 0);
+                const slider = document.getElementById(`eq-${band}`);
+                if (slider) slider.value = value;
+            });
+        });
+
+        async function saveSettings() {
+            // Save basic settings
+            const settings = {
+                hardwareAcceleration: document.getElementById('hardwareAcceleration').checked,
+                minimizeToTray: document.getElementById('minimizeToTray').checked,
+                startMinimized: document.getElementById('startMinimized').checked,
+                glassEffects: document.getElementById('glassEffects').checked,
+                backgroundAudio: document.getElementById('backgroundAudio').checked,
+                audioQuality: parseInt(document.getElementById('audioQuality').value)
+            };
+
+            // Save all settings
+            for (const [key, value] of Object.entries(settings)) {
+                await window.electronAPI.setSetting(key, value);
+            }
+
+            // Save equalizer settings
+            const eqBands = ['32', '64', '125', '250', '500', '1k', '2k', '4k', '8k', '16k'];
+            for (const band of eqBands) {
+                const slider = document.getElementById(`eq-${band}`);
+                if (slider) {
+                    await window.electronAPI.setSetting(`eq-${band}`, parseInt(slider.value));
+                }
+            }
+
+            // Show feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✓ Saved!';
+            btn.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
+            }, 2000);
+        }
+
+        async function resetSettings() {
+            if (confirm('Are you sure you want to reset all settings to default?')) {
+                // Reset all checkboxes and sliders
+                document.getElementById('hardwareAcceleration').checked = true;
+                document.getElementById('minimizeToTray').checked = true;
+                document.getElementById('startMinimized').checked = false;
+                document.getElementById('glassEffects').checked = true;
+                document.getElementById('backgroundAudio').checked = true;
+                document.getElementById('audioQuality').value = 3;
+
+                // Reset equalizer
+                const eqBands = ['32', '64', '125', '250', '500', '1k', '2k', '4k', '8k', '16k'];
+                eqBands.forEach(band => {
+                    const slider = document.getElementById(`eq-${band}`);
+                    if (slider) slider.value = 0;
+                });
+
+                await saveSettings();
+            }
+        }
+    </script>
+</body>
+</html>

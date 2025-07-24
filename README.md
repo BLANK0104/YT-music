@@ -2,6 +2,19 @@
 
 A cross-platform desktop application for YouTube Music with built-in ad blocking and enhanced features.
 
+## 📦 **Ready to Use - Single File Download**
+
+**Download the portable executable:** `YouTube Music Desktop-1.0.0-Portable.exe` from the `/dist` folder
+
+✅ **No installation required** - just download and run!  
+✅ **Complete ad blocking** - network-level and CSS-based  
+✅ **Official YouTube Music icon** - authentic branding  
+✅ **System tray integration** - background playback  
+✅ **Built-in equalizer** - 10-band frequency control  
+✅ **Glass morphism UI** - beautiful animations and effects  
+
+---
+
 ## Features
 
 🎵 **Full YouTube Music Experience**
