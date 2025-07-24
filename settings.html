@@ -218,6 +218,43 @@
         <h1>⚙️ Settings</h1>
 
         <div class="setting-group">
+            <h3>🛡️ Ad Blocking</h3>
+            
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Enhanced Ad Blocking</h4>
+                    <p>uBlock Origin-style comprehensive ad blocking</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="enhancedAdBlocking" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Block Premium Prompts</h4>
+                    <p>Hide all YouTube Premium upgrade messages</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="blockPremiumPrompts" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <h4>Network-Level Blocking</h4>
+                    <p>Block ad requests at the network level</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="networkAdBlocking" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="setting-group">
             <h3>🎵 Playback</h3>
             
             <div class="setting-item">
@@ -346,6 +383,9 @@
         window.addEventListener('DOMContentLoaded', async () => {
             // Load all settings from store
             const settings = {
+                enhancedAdBlocking: await window.electronAPI.getSetting('enhancedAdBlocking', true),
+                blockPremiumPrompts: await window.electronAPI.getSetting('blockPremiumPrompts', true),
+                networkAdBlocking: await window.electronAPI.getSetting('networkAdBlocking', true),
                 hardwareAcceleration: await window.electronAPI.getSetting('hardwareAcceleration', true),
                 minimizeToTray: await window.electronAPI.getSetting('minimizeToTray', true),
                 startMinimized: await window.electronAPI.getSetting('startMinimized', false),
@@ -376,8 +416,11 @@
         });
 
         async function saveSettings() {
-            // Save basic settings
+            // Save basic settings including new ad blocking options
             const settings = {
+                enhancedAdBlocking: document.getElementById('enhancedAdBlocking').checked,
+                blockPremiumPrompts: document.getElementById('blockPremiumPrompts').checked,
+                networkAdBlocking: document.getElementById('networkAdBlocking').checked,
                 hardwareAcceleration: document.getElementById('hardwareAcceleration').checked,
                 minimizeToTray: document.getElementById('minimizeToTray').checked,
                 startMinimized: document.getElementById('startMinimized').checked,
@@ -403,18 +446,21 @@
             // Show feedback
             const btn = event.target;
             const originalText = btn.textContent;
-            btn.textContent = '✓ Saved!';
+            btn.textContent = '✅ Saved! Ad blocking updated';
             btn.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
             
             setTimeout(() => {
                 btn.textContent = originalText;
                 btn.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
-            }, 2000);
+            }, 3000);
         }
 
         async function resetSettings() {
-            if (confirm('Are you sure you want to reset all settings to default?')) {
-                // Reset all checkboxes and sliders
+            if (confirm('Are you sure you want to reset all settings to default? This will enable maximum ad blocking.')) {
+                // Reset all checkboxes and sliders to optimal ad blocking settings
+                document.getElementById('enhancedAdBlocking').checked = true;
+                document.getElementById('blockPremiumPrompts').checked = true;
+                document.getElementById('networkAdBlocking').checked = true;
                 document.getElementById('hardwareAcceleration').checked = true;
                 document.getElementById('minimizeToTray').checked = true;
                 document.getElementById('startMinimized').checked = false;
