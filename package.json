@@ -29,11 +29,11 @@
     "streaming"
   ],
   "dependencies": {
-    "electron": "^37.2.4",
     "electron-store": "^8.2.0",
     "electron-updater": "^6.6.2"
   },
   "devDependencies": {
+    "electron": "^37.2.4",
     "electron-builder": "^26.0.12",
     "electron-icon-builder": "^2.0.1"
   },
@@ -52,7 +52,7 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "assets/icon.ico"
+      "icon": "assets/512px-Youtube_Music_icon.svg.png"
     },
     "mac": {
       "target": "dmg",
