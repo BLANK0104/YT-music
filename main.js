@@ -456,6 +456,27 @@ function createCustomMenu() {
                 },
                 { type: 'separator' },
                 {
+                    label: 'Ad Blocker Stats',
+                    click: async () => {
+                        try {
+                            if (mainWindow) {
+                                mainWindow.webContents.executeJavaScript(`
+                                    const stats = window.ytMusic && window.ytMusic.getAdBlockerStats ? 
+                                        window.ytMusic.getAdBlockerStats() : 
+                                        { blockedRequests: 0, isActive: false };
+                                    
+                                    alert('🛡️ Ad Blocker Stats:\\n\\n' +
+                                        'Status: ' + (stats.isActive ? 'Active' : 'Inactive') + '\\n' +
+                                        'Blocked Requests: ' + stats.blockedRequests);
+                                `);
+                            }
+                        } catch (error) {
+                            console.error('Error getting ad blocker stats:', error);
+                        }
+                    }
+                },
+                { type: 'separator' },
+                {
                     label: 'Full Screen',
                     accelerator: process.platform === 'darwin' ? 'Ctrl+Cmd+F' : 'F11',
                     click: () => {
@@ -859,8 +880,89 @@ function setupGlobalShortcuts() {
     });
 }
 
+// Proven network-level ad blocking system
+function setupProvenAdBlocking() {
+    console.log('🛡️ Setting up proven network-level ad blocking...');
+    
+    // Network-level ad request blocking based on successful ad blockers
+    const adBlockingPatterns = [
+        // Google Ad Services
+        '*://*.googlesyndication.com/*',
+        '*://*.googleadservices.com/*',
+        '*://*.googletagmanager.com/gtag/*',
+        '*://*.googletagservices.com/*',
+        '*://*.google-analytics.com/*',
+        
+        // DoubleClick (Google's ad platform)
+        '*://*.doubleclick.net/*',
+        
+        // YouTube specific ad endpoints
+        '*://*/pagead/interaction*',
+        '*://*/pagead/adview*',
+        '*://*/api/stats/ads*',
+        '*://*/get_midroll_info*',
+        '*://*/annotations_invideo*',
+        '*://*/player_ads_config*',
+        
+        // Generic ad patterns that are safe to block
+        '*://*/*ad_type=*',
+        '*://*/*adurl=*',
+        '*://*/*advertiser_id=*'
+    ];
+
+    // Essential patterns that should NEVER be blocked
+    const essentialPatterns = [
+        'youtubei/v1/player',
+        'youtubei/v1/next',
+        'youtubei/v1/browse',
+        'youtubei/v1/search',
+        'videoplayback',
+        'api/stats/qoe',
+        'api/stats/watchtime',
+        'generate_204',
+        'range=',
+        'mime=audio',
+        'mime=video'
+    ];
+
+    session.defaultSession.webRequest.onBeforeRequest({
+        urls: adBlockingPatterns
+    }, (details, callback) => {
+        const url = details.url.toLowerCase();
+        
+        // Never block essential requests
+        const isEssential = essentialPatterns.some(pattern => url.includes(pattern));
+        if (isEssential) {
+            callback({});
+            return;
+        }
+        
+        console.log('🚫 Blocked network ad request:', details.url);
+        callback({ cancel: true });
+    });
+
+    // Remove ad-related response headers
+    session.defaultSession.webRequest.onHeadersReceived({
+        urls: ['*://music.youtube.com/*', '*://www.youtube.com/*']
+    }, (details, callback) => {
+        const responseHeaders = { ...details.responseHeaders } || {};
+        
+        // Remove ad-related headers
+        delete responseHeaders['x-google-ad-id'];
+        delete responseHeaders['x-google-av-cxn'];
+        delete responseHeaders['x-ads-creative-id'];
+        
+        callback({ responseHeaders });
+    });
+
+    console.log('✅ Proven network-level ad blocking activated');
+}
+
 // App event handlers
 app.whenReady().then(() => {
+    // Setup proven network-level ad blocking
+    setupProvenAdBlocking();
+    
     createWindow();
 
     app.on('activate', () => {
@@ -1030,6 +1132,25 @@ ipcMain.handle('show-notification', (event, track) => {
 
 ipcMain.handle('get-current-track', () => {
     return currentTrack;
+});
+
+ipcMain.handle('get-adblocker-stats', async () => {
+    if (mainWindow) {
+        try {
+            const stats = await mainWindow.webContents.executeJavaScript(`
+                if (window.provenAdBlocker) {
+                    window.provenAdBlocker.getStats();
+                } else {
+                    { blockedRequests: 0, isActive: false };
+                }
+            `);
+            return stats;
+        } catch (error) {
+            console.error('Error getting ad blocker stats:', error);
+            return { blockedRequests: 0, isActive: false };
+        }
+    }
+    return { blockedRequests: 0, isActive: false };
 });
 
 ipcMain.handle('set-current-track', (event, track) => {

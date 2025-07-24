@@ -40,46 +40,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
 // Basic YouTube Music integration functions
 contextBridge.exposeInMainWorld('ytMusic', {
-    // Step 1: Basic CSS-only ad removal (safe, non-intrusive)
-    removeAds: () => {
-        console.log('🛡️ Running basic CSS ad removal...');
-        
-        // Basic ad selectors that are safe to remove
-        const basicAdSelectors = [
-            // Premium upsell banners
-            'ytmusic-premium-upsell-banner',
-            '.ytmusic-premium-upsell-banner',
-            '.ytmusic-banner-promo-renderer',
-            'ytmusic-notification-action-renderer[aria-label*="Premium"]',
-            'ytmusic-notification-action-renderer[aria-label*="Upgrade"]',
-            
-            // Visual ad containers (not affecting playback)
-            '.advertisement-shelf-renderer',
-            '.ytmusic-popup-container[popup-type*="PREMIUM"]',
-            '[aria-label*="Get YouTube Premium"]',
-            '[aria-label*="Try Premium"]',
-            '[aria-label*="Upgrade to Premium"]'
-        ];
-        
-        let removedCount = 0;
-        basicAdSelectors.forEach(selector => {
-            try {
-                const elements = document.querySelectorAll(selector);
-                elements.forEach(el => {
-                    if (el && el.parentNode) {
-                        el.style.display = 'none !important';
-                        removedCount++;
-                    }
-                });
-            } catch (e) {
-                // Silently continue if selector fails
-            }
-        });
-        
-        if (removedCount > 0) {
-            console.log(`🚫 Removed ${removedCount} ad elements (CSS-only)`);
-        }
-    },
     // Enhanced current track info with comprehensive metadata
     getCurrentTrack: () => {
         try {
@@ -256,6 +216,26 @@ contextBridge.exposeInMainWorld('ytMusic', {
             return true;
         }
         return false;
+    },
+
+    // Proven ad blocking interface
+    removeAds: () => {
+        if (window.provenAdBlocker) {
+            // Get ad blocking stats
+            const stats = window.provenAdBlocker.getStats();
+            console.log(`🛡️ Ad blocker active - ${stats.blockedRequests} requests blocked`);
+            return true;
+        } else {
+            console.log('⚠️ Proven ad blocker not initialized yet');
+            return false;
+        }
+    },
+
+    getAdBlockerStats: () => {
+        if (window.provenAdBlocker) {
+            return window.provenAdBlocker.getStats();
+        }
+        return { blockedRequests: 0, isActive: false };
     }
 });
 
@@ -275,25 +255,22 @@ window.addEventListener('DOMContentLoaded', () => {
         addMiniPlayerButton();
     }, 3000);
     
-    // Run initial ad removal after page loads
+    // Initialize proven ad blocker
+    const provenAdBlockerScript = document.createElement('script');
+    provenAdBlockerScript.src = 'file://' + __dirname + '/proven-adblocker.js';
+    provenAdBlockerScript.onload = () => {
+        console.log('🛡️ Proven Ad Blocker loaded successfully');
+    };
+    provenAdBlockerScript.onerror = (error) => {
+        console.error('❌ Failed to load proven ad blocker:', error);
+    };
+    document.head.appendChild(provenAdBlockerScript);
+    
+    // Start track monitoring and load settings
     setTimeout(() => {
-        if (window.ytMusic && window.ytMusic.removeAds) {
-            window.ytMusic.removeAds();
-        }
-        
-        // Start track monitoring
         startTrackMonitoring();
-        
-        // Load user settings and apply features
         loadAndApplySettings();
     }, 2000);
-    
-    // Run basic ad removal every 30 seconds (gentle approach)
-    setInterval(() => {
-        if (window.ytMusic && window.ytMusic.removeAds) {
-            window.ytMusic.removeAds();
-        }
-    }, 30000);
 });
 
 // Track monitoring for notifications and integrations
