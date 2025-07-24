@@ -1,0 +1,148 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build application
+      run: npm run build:win
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: List build output
+      run: dir dist
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-builds
+        path: |
+          dist/*.exe
+          dist/*.msi
+        retention-days: 30
+        
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-builds
+        path: dist/
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/*.exe
+          dist/*.msi
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+  auto-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-builds
+        path: dist/
+        
+    - name: Get version from package.json
+      id: package-version
+      run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+      
+    - name: Check if release exists
+      id: check-release
+      run: |
+        if gh release view "v${{ steps.package-version.outputs.version }}" >/dev/null 2>&1; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Create automatic release
+      if: steps.check-release.outputs.exists == 'false'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: "v${{ steps.package-version.outputs.version }}"
+        name: "YouTube Music Desktop v${{ steps.package-version.outputs.version }}"
+        body: |
+          🎵 **YouTube Music Desktop - Automatic Release**
+          
+          **Download:** `YouTube Music Desktop-${{ steps.package-version.outputs.version }}-Portable.exe`
+          
+          ## ✨ Features
+          - 🚫 **Complete ad blocking** - Network-level and CSS-based
+          - 🎵 **Full YouTube Music experience** with Google login
+          - 🖥️ **System tray integration** - Background playback
+          - 🎛️ **Built-in 10-band equalizer**
+          - ✨ **Glass morphism UI** with beautiful animations
+          - ⚙️ **Advanced settings** and customization
+          - 🎹 **Global media key support**
+          - 🔒 **Secure and private** - No data tracking
+          
+          ## 🚀 How to Use
+          1. Download the `.exe` file below
+          2. Run it (no installation required)
+          3. Sign in to your YouTube account
+          4. Enjoy ad-free music!
+          
+          ## 🆕 What's New
+          - Latest build from commit: ${{ github.sha }}
+          - Built automatically on: ${{ github.event.head_commit.timestamp }}
+          - Commit message: "${{ github.event.head_commit.message }}"
+          
+          ---
+          
+          **Platform:** Windows 10/11 (x64)  
+          **Size:** ~150MB portable executable  
+          **No installation required** - Just download and run!
+        files: |
+          dist/*.exe
+          dist/*.msi
+        generate_release_notes: false
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
