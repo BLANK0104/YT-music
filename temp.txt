@@ -1,0 +1,40 @@
+  },
+  "build": {
+    "appId": "com.yourcompany.youtube-music-desktop",
+    "productName": "YouTube Music Desktop",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "proven-adblocker.js",
+      "advanced-adblocker.js",
+      "index.html",
+      "settings.html",
+      "mini-player.html",
+      "custom-ui.css",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/512px-Youtube_Music_icon.svg.png"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.music"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png",
+      "category": "Audio"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }

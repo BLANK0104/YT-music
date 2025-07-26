@@ -116,10 +116,41 @@ node_modules
 # Debug log from npm
 npm-debug.log
 
-# Electron
+# Electron build artifacts
 dist/
 app/
 release/
+out/
+build/Release/
+build/Debug/
+*.app
+*.dmg
+*.deb
+*.rpm
+*.AppImage
+*.exe
+*.msi
+
+# Electron cache
+.cache/
+electron/
+
+# Build artifacts
+build/CMakeFiles/
+build/cef/
+third_party/
+
+# Backup and temporary files
+*-backup.*
+*-old.*
+*-clean.*
+*.tmp
+*.temp
+
+# Development files
+dev.bat
+start.bat
+scripts/
 
 # IDEs
 .vscode/
