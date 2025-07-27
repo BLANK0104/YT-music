@@ -22,7 +22,8 @@
     "build:linux": "electron-builder --linux",
     "dist": "npm run build",
     "pack": "electron-builder --dir",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "release:description": "node scripts/release-description.js"
   },
   "keywords": [
     "youtube-music",
@@ -62,6 +63,8 @@
       "mini-player.html",
       "custom-ui.css",
       "assets/**/*",
+      "scripts/**/*",
+      "src/**/*",
       "package.json",
       "node_modules/**/*"
     ],

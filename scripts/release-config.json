@@ -1,0 +1,120 @@
+{
+  "app": {
+    "name": "YouTube Music Desktop",
+    "subtitle": "Glass UI Edition",
+    "description": "The most beautiful YouTube Music desktop experience with modern glass effects!"
+  },
+  "features": {
+    "main": [
+      "🎨 **Glass Morphism UI** - Beautiful transparent effects with 4 stunning themes",
+      "🎵 **Continuous Playback** - Automatic inactivity bypass, no more \"Are you still listening?\" popups",
+      "🏗️ **Modular Architecture** - Clean, maintainable codebase with separated concerns",
+      "🚫 **Advanced Ad Blocking** - Network-level and CSS-based ad removal",
+      "🎵 **Full YouTube Music Experience** - Complete access with Google account sync",
+      "🖥️ **System Tray Integration** - Background playback with music controls",
+      "🎛️ **Audio Enhancements** - 10-band equalizer, normalization, crossfade",
+      "⌨️ **Global Media Keys** - System-wide keyboard shortcuts",
+      "🎨 **Custom Themes** - Dark, Light, Purple, Blue glass themes",
+      "✨ **Smooth Animations** - Customizable performance levels",
+      "📱 **Mini Player Mode** - Compact floating window",
+      "🔔 **Desktop Notifications** - Track change notifications",
+      "🎮 **Discord Rich Presence** - Show what you're listening to",
+      "📻 **Last.fm Scrobbling** - Automatic track scrobbling",
+      "🔒 **Enhanced Security** - No data tracking, secure context isolation"
+    ],
+    "latest": [
+      "✨ Glass morphism UI is now the default interface",
+      "🎵 Inactivity bypass prevents listening interruptions",
+      "🏗️ Complete modular architecture for better performance", 
+      "🎨 Four beautiful glass themes to choose from",
+      "⚡ Optimized performance with hardware acceleration",
+      "🔧 Enhanced settings management and menu integration",
+      "📱 Improved mini player with glass effects",
+      "🎛️ Advanced audio processing and enhancement features"
+    ]
+  },
+  "installation": {
+    "fileSize": "~150MB installer",
+    "platform": "Windows 10/11 (64-bit)",
+    "instructions": [
+      "**Download** the `.exe` file from the assets below",
+      "**Run the installer** - No administrator rights required",
+      "**Launch the app** - It will appear in your Start Menu", 
+      "**Sign in** to your YouTube/Google account",
+      "**Customize** - Choose your glass theme in View → Glass Effects",
+      "**Enjoy** ad-free music with modern glass UI!"
+    ]
+  },
+  "quickStart": [
+    "🎨 **Access Glass Themes:** View → Glass Effects → Choose your theme",
+    "🎵 **Continuous Play:** Enabled by default - no setup needed!",
+    "🎛️ **Audio Settings:** View → Audio → Equalizer & Effects", 
+    "⌨️ **Shortcuts:** Media keys work globally for play/pause/skip",
+    "📱 **Mini Player:** Ctrl+M for floating compact window",
+    "🔧 **Settings:** Click gear icon or View → Settings",
+    "💡 **Tips:** Right-click system tray for quick controls"
+  ],
+  "themes": [
+    {
+      "name": "Glass Dark",
+      "icon": "🌙", 
+      "description": "Perfect for night listening with deep transparency"
+    },
+    {
+      "name": "Glass Light",
+      "icon": "☀️",
+      "description": "Clean daytime experience with soft effects"
+    },
+    {
+      "name": "Glass Purple", 
+      "icon": "💜",
+      "description": "Stylish and unique with purple highlights"
+    },
+    {
+      "name": "Glass Blue",
+      "icon": "🔵", 
+      "description": "Professional appearance with blue accents"
+    }
+  ],
+  "performance": [
+    {
+      "level": "None",
+      "description": "Maximum performance for older hardware"
+    },
+    {
+      "level": "Minimal", 
+      "description": "Basic effects with fast transitions"
+    },
+    {
+      "level": "Medium",
+      "description": "Balanced experience (default)"
+    },
+    {
+      "level": "Full",
+      "description": "Maximum visual appeal with rich animations"
+    }
+  ],
+  "systemRequirements": {
+    "minimum": [
+      "**OS:** Windows 10/11 (64-bit)",
+      "**RAM:** 4GB minimum", 
+      "**Graphics:** Integrated graphics",
+      "**Storage:** 200MB free space",
+      "**Internet:** Required for streaming"
+    ],
+    "recommended": [
+      "**OS:** Windows 11 (64-bit)",
+      "**RAM:** 8GB+ for optimal performance",
+      "**Graphics:** Dedicated GPU for best glass effects", 
+      "**Storage:** 500MB+ for cache",
+      "**Internet:** Stable broadband connection"
+    ]
+  },
+  "help": {
+    "documentation": "Check the included guides and README",
+    "settings": "Access via View → Settings or Ctrl+,",
+    "themes": "View → Glass Effects for visual customization", 
+    "audio": "View → Audio for equalizer and sound settings",
+    "miniPlayer": "Ctrl+M for compact floating window"
+  }
+}

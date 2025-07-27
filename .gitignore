@@ -150,7 +150,6 @@ third_party/
 # Development files
 dev.bat
 start.bat
-scripts/
 
 # IDEs
 .vscode/
