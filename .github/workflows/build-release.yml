@@ -119,47 +119,51 @@ jobs:
         # Check if scripts directory exists and create fallback description
         if [ ! -d "scripts" ]; then
           echo "Scripts directory not found, creating fallback description..."
-          # Create a simple fallback description
-          echo "RELEASE_DESCRIPTION<<EOF" >> $GITHUB_OUTPUT
-          echo "# 🎵 YouTube Music Desktop - Glass UI Edition v${{ steps.package-version.outputs.version }}" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "## ✨ What's New" >> $GITHUB_OUTPUT
-          echo "- Latest build with enhanced features" >> $GITHUB_OUTPUT
-          echo "- Glass UI with modern transparency effects" >> $GITHUB_OUTPUT
-          echo "- Improved performance and stability" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "## 📦 Installation" >> $GITHUB_OUTPUT
-          echo "1. Download the **.exe** installer below" >> $GITHUB_OUTPUT
-          echo "2. Run the installer and follow the setup wizard" >> $GITHUB_OUTPUT
-          echo "3. Launch YouTube Music Desktop from your desktop or start menu" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "## 🎨 Features" >> $GITHUB_OUTPUT
-          echo "- 🎵 **Full YouTube Music Experience** - Complete desktop integration" >> $GITHUB_OUTPUT
-          echo "- 🎨 **Glass UI Design** - Modern transparency and blur effects" >> $GITHUB_OUTPUT
-          echo "- 🔊 **Audio Enhancements** - Built-in equalizer and audio processing" >> $GITHUB_OUTPUT
-          echo "- 🎮 **Discord Integration** - Rich presence support" >> $GITHUB_OUTPUT
-          echo "- 📱 **Mini Player** - Compact player mode" >> $GITHUB_OUTPUT
-          echo "- ⚡ **Performance Optimized** - Fast and responsive interface" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "## 💾 System Requirements" >> $GITHUB_OUTPUT
-          echo "- **OS:** Windows 10/11 (64-bit)" >> $GITHUB_OUTPUT
-          echo "- **RAM:** 4GB minimum, 8GB recommended" >> $GITHUB_OUTPUT
-          echo "- **Storage:** 150MB available space" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "## 🔗 Quick Links" >> $GITHUB_OUTPUT
-          echo "- 📖 **Documentation:** Check the README.md file" >> $GITHUB_OUTPUT
-          echo "- ⚙️ **Settings:** Press F1 or visit Settings → Help" >> $GITHUB_OUTPUT
-          echo "- 🐛 **Issues:** Report bugs on GitHub Issues" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "---" >> $GITHUB_OUTPUT
-          echo "*Built on $(date +'%Y-%m-%d') | Commit: ${GITHUB_SHA:0:7}*" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Create a simple fallback description using a different delimiter
+          {
+            echo 'RELEASE_DESCRIPTION<<EOL'
+            echo '# 🎵 YouTube Music Desktop - Glass UI Edition v${{ steps.package-version.outputs.version }}'
+            echo ''
+            echo '## ✨ What'\''s New'
+            echo '- Latest build with enhanced features'
+            echo '- Glass UI with modern transparency effects'
+            echo '- Improved performance and stability'
+            echo ''
+            echo '## 📦 Installation'
+            echo '1. Download the **.exe** installer below'
+            echo '2. Run the installer and follow the setup wizard'
+            echo '3. Launch YouTube Music Desktop from your desktop or start menu'
+            echo ''
+            echo '## 🎨 Features'
+            echo '- 🎵 **Full YouTube Music Experience** - Complete desktop integration'
+            echo '- 🎨 **Glass UI Design** - Modern transparency and blur effects'
+            echo '- 🔊 **Audio Enhancements** - Built-in equalizer and audio processing'
+            echo '- 🎮 **Discord Integration** - Rich presence support'
+            echo '- 📱 **Mini Player** - Compact player mode'
+            echo '- ⚡ **Performance Optimized** - Fast and responsive interface'
+            echo ''
+            echo '## 💾 System Requirements'
+            echo '- **OS:** Windows 10/11 (64-bit)'
+            echo '- **RAM:** 4GB minimum, 8GB recommended'
+            echo '- **Storage:** 150MB available space'
+            echo ''
+            echo '## 🔗 Quick Links'
+            echo '- 📖 **Documentation:** Check the README.md file'
+            echo '- ⚙️ **Settings:** Press F1 or visit Settings → Help'
+            echo '- 🐛 **Issues:** Report bugs on GitHub Issues'
+            echo ''
+            echo '---'
+            echo "*Built on $(date +'%Y-%m-%d') | Commit: ${GITHUB_SHA:0:7}*"
+            echo 'EOL'
+          } >> $GITHUB_OUTPUT
         else
           cd scripts
           DESCRIPTION=$(node release-description.js)
-          echo "RELEASE_DESCRIPTION<<EOF" >> $GITHUB_OUTPUT
-          echo "$DESCRIPTION" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo 'RELEASE_DESCRIPTION<<EOL'
+            echo "$DESCRIPTION"
+            echo 'EOL'
+          } >> $GITHUB_OUTPUT
         fi
       env:
         GITHUB_SHA: ${{ github.sha }}
