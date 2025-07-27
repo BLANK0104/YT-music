@@ -119,38 +119,41 @@ jobs:
         # Check if scripts directory exists and create if needed
         if [ ! -d "scripts" ]; then
           echo "Scripts directory not found, creating fallback description..."
-          DESCRIPTION="# 🎵 YouTube Music Desktop - Glass UI Edition v${{ steps.package-version.outputs.version }}
+          DESCRIPTION=$(cat << 'EOF'
+        # 🎵 YouTube Music Desktop - Glass UI Edition v${{ steps.package-version.outputs.version }}
 
-## ✨ What's New
-- Latest build with enhanced features
-- Glass UI with modern transparency effects
-- Improved performance and stability
+        ## ✨ What's New
+        - Latest build with enhanced features
+        - Glass UI with modern transparency effects
+        - Improved performance and stability
 
-## 📦 Installation
-1. Download the **.exe** installer below
-2. Run the installer and follow the setup wizard
-3. Launch YouTube Music Desktop from your desktop or start menu
+        ## 📦 Installation
+        1. Download the **.exe** installer below
+        2. Run the installer and follow the setup wizard
+        3. Launch YouTube Music Desktop from your desktop or start menu
 
-## 🎨 Features
-- 🎵 **Full YouTube Music Experience** - Complete desktop integration
-- 🎨 **Glass UI Design** - Modern transparency and blur effects
-- 🔊 **Audio Enhancements** - Built-in equalizer and audio processing
-- 🎮 **Discord Integration** - Rich presence support
-- 📱 **Mini Player** - Compact player mode
-- ⚡ **Performance Optimized** - Fast and responsive interface
+        ## 🎨 Features
+        - 🎵 **Full YouTube Music Experience** - Complete desktop integration
+        - 🎨 **Glass UI Design** - Modern transparency and blur effects
+        - 🔊 **Audio Enhancements** - Built-in equalizer and audio processing
+        - 🎮 **Discord Integration** - Rich presence support
+        - 📱 **Mini Player** - Compact player mode
+        - ⚡ **Performance Optimized** - Fast and responsive interface
 
-## 💾 System Requirements
-- **OS:** Windows 10/11 (64-bit)
-- **RAM:** 4GB minimum, 8GB recommended
-- **Storage:** 150MB available space
+        ## 💾 System Requirements
+        - **OS:** Windows 10/11 (64-bit)
+        - **RAM:** 4GB minimum, 8GB recommended
+        - **Storage:** 150MB available space
 
-## 🔗 Quick Links
-- 📖 **Documentation:** Check the README.md file
-- ⚙️ **Settings:** Press F1 or visit Settings → Help
-- 🐛 **Issues:** Report bugs on GitHub Issues
+        ## 🔗 Quick Links
+        - 📖 **Documentation:** Check the README.md file
+        - ⚙️ **Settings:** Press F1 or visit Settings → Help
+        - 🐛 **Issues:** Report bugs on GitHub Issues
 
----
-*Built on $(date +'%Y-%m-%d') | Commit: ${GITHUB_SHA:0:7}*"
+        ---
+        *Built on $(date +'%Y-%m-%d') | Commit: ${GITHUB_SHA:0:7}*
+        EOF
+        )
         else
           cd scripts
           DESCRIPTION=$(node release-description.js)
