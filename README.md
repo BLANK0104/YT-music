@@ -1,8 +1,28 @@
-# YouTube Music Desktop
+# YouTube Music Desktop - Glass UI Edition
 
-A cross-platform desktop application for YouTube Music with built-in ad blocking and enhanced features.
+A modern, cross-platform desktop application for YouTube Music with stunning glass morphism UI, advanced features, and seamless user experience.
 
-## Features
+## ✨ New Features (v2.0)
+
+🎨 **Glass Morphism UI**
+- Beautiful transparent glass effects with backdrop blur
+- Multiple stunning themes (Dark, Light, Purple, Blue)
+- Smooth animations with customizable levels
+- Modern, premium appearance
+
+🎵 **Continuous Playback**
+- **Automatic Inactivity Bypass** - No more "Are you still listening?" popups!
+- Seamless long listening sessions
+- Background activity simulation
+- Smart popup detection and dismissal
+
+🏗️ **Modular Architecture**
+- Clean, maintainable codebase
+- Separated concerns with specialized modules
+- Easy to extend and customize
+- Better performance and reliability
+
+## 🎯 Core Features
 
 🎵 **Full YouTube Music Experience**
 - Complete access to YouTube Music's web interface
@@ -18,7 +38,7 @@ A cross-platform desktop application for YouTube Music with built-in ad blocking
 🖥️ **Native Desktop Integration**
 - Native window controls and menus
 - Keyboard shortcuts for media controls
-- System tray integration (planned)
+- System tray integration with music controls
 - Cross-platform support (Windows, macOS, Linux)
 
 🔒 **Enhanced Security & Privacy**
@@ -27,13 +47,19 @@ A cross-platform desktop application for YouTube Music with built-in ad blocking
 - No data tracking beyond YouTube Music
 - Content Security Policy implementation
 
-## Installation
+## 🚀 Quick Start
+
+### Easy Launch (Windows)
+```cmd
+# Download and run
+start.bat
+```
 
 ### Prerequisites
 - Node.js (v16 or higher)
 - npm or yarn
 
-### Development Setup
+### Installation
 
 1. **Clone or download the project**
    ```bash
@@ -45,12 +71,33 @@ A cross-platform desktop application for YouTube Music with built-in ad blocking
    npm install
    ```
 
-3. **Run in development mode**
+3. **Launch the Glass UI app**
+   ```bash
+   npm start
+   ```
+
+4. **Development mode with live reload**
    ```bash
    npm run dev
    ```
 
-4. **Build for production**
+### 🎨 Glass UI Themes
+
+Access beautiful themes via **View → Glass Effects**:
+- **Glass Dark** - Perfect for night listening
+- **Glass Light** - Clean daytime experience  
+- **Glass Purple** - Stylish and unique
+- **Glass Blue** - Professional appearance
+
+### ⚡ Performance Options
+
+Choose animation level via **View → Animations**:
+- **None** - Maximum performance
+- **Minimal** - Basic effects
+- **Medium** - Balanced (default)
+- **Full** - Maximum beauty
+
+## 🛠️ Build Options
    ```bash
    # Build for current platform
    npm run build

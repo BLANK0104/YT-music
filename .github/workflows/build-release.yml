@@ -86,6 +86,12 @@ jobs:
       with:
         fetch-depth: 0
         
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
@@ -107,50 +113,26 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
+    - name: Generate release description
+      id: release-description
+      run: |
+        cd scripts
+        DESCRIPTION=$(node release-description.js)
+        echo "RELEASE_DESCRIPTION<<EOF" >> $GITHUB_OUTPUT
+        echo "$DESCRIPTION" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+      env:
+        GITHUB_SHA: ${{ github.sha }}
+        GITHUB_EVENT_HEAD_COMMIT_TIMESTAMP: ${{ github.event.head_commit.timestamp }}
+        GITHUB_EVENT_HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        
     - name: Create automatic release
       if: steps.check-release.outputs.exists == 'false'
       uses: softprops/action-gh-release@v2
       with:
         tag_name: "v${{ steps.package-version.outputs.version }}"
-        name: "YouTube Music Desktop v${{ steps.package-version.outputs.version }}"
-        body: |
-          🎵 **YouTube Music Desktop - v${{ steps.package-version.outputs.version }}**
-          
-          **Download:** `YouTube Music Desktop Setup ${{ steps.package-version.outputs.version }}.exe`
-          
-          ## ✨ Features
-          - 🚫 **Complete ad blocking** - Network-level and CSS-based
-          - 🎵 **Full YouTube Music experience** with Google login
-          - 🖥️ **System tray integration** - Background playback
-          - 🎛️ **Advanced custom menu** with all YouTube Music features
-          - ⚙️ **Comprehensive settings** and customization
-          - 🎹 **Global media key support**
-          - � **Mini player mode**
-          - 🔔 **Desktop notifications**
-          - �🔒 **Secure and private** - No data tracking
-          
-          ## 🚀 How to Use
-          1. Download the `.exe` file below
-          2. Run the installer
-          3. Sign in to your YouTube account
-          4. Enjoy ad-free music with enhanced features!
-          
-          ## 🆕 What's New in v${{ steps.package-version.outputs.version }}
-          - Latest build from commit: ${{ github.sha }}
-          - Built automatically on: ${{ github.event.head_commit.timestamp }}
-          - Commit message: "${{ github.event.head_commit.message }}"
-          
-          ## ⚙️ Settings Access
-          - **Settings Button**: Top-right corner of the app
-          - **Menu Bar**: YouTube Music → Settings
-          - **System Tray**: Right-click tray icon → Settings
-          - **Keyboard**: `Ctrl+,` (Windows) or `Cmd+,` (Mac)
-          
-          ---
-          
-          **Platform:** Windows 10/11 (x64)  
-          **Size:** ~150MB installer  
-          **Easy installation** - Just download and run!
+        name: "YouTube Music Desktop - Glass UI Edition v${{ steps.package-version.outputs.version }}"
+        body: ${{ steps.release-description.outputs.RELEASE_DESCRIPTION }}
         files: |
           dist/*.exe
           dist/*.blockmap
