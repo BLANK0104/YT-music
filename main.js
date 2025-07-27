@@ -185,6 +185,33 @@ function createWindow() {
     mainWindow.on('resize', saveBounds);
     mainWindow.on('move', saveBounds);
 
+    // Handle window close attempt (before closing)
+    mainWindow.on('close', (event) => {
+        const settings = store.get('settings', defaultSettings);
+        
+        // If not quitting via menu/quit command and system tray is enabled
+        if (!isQuiting && settings.systemTray) {
+            event.preventDefault();
+            mainWindow.hide();
+            
+            // Show notification on first minimize to tray
+            if (settings.desktopNotifications && !store.get('trayNotificationShown', false)) {
+                new Notification({
+                    title: 'YouTube Music',
+                    body: 'App minimized to system tray. Click the tray icon to restore.',
+                    icon: path.join(__dirname, 'assets', '512px-Youtube_Music_icon.svg.png')
+                }).show();
+                store.set('trayNotificationShown', true);
+            }
+            
+            console.log('🔄 App minimized to system tray');
+            return false;
+        }
+        
+        // Otherwise allow normal close
+        console.log('❌ App closing normally');
+    });
+
     // Handle window closed
     mainWindow.on('closed', () => {
         mainWindow = null;
