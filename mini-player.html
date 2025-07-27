@@ -169,28 +169,51 @@
         });
         
         // Update track info periodically
-        function updateTrackInfo() {
-            if (window.electronAPI?.getCurrentTrack) {
-                window.electronAPI.getCurrentTrack().then(track => {
+        async function updateTrackInfo() {
+            try {
+                if (window.electronAPI?.getCurrentTrack) {
+                    const track = await window.electronAPI.getCurrentTrack();
+                    
                     if (track && track.title) {
                         document.getElementById('trackTitle').textContent = track.title;
                         document.getElementById('trackArtist').textContent = track.artist || 'Unknown Artist';
                         
                         if (track.thumbnail) {
                             document.getElementById('albumArt').style.backgroundImage = `url(${track.thumbnail})`;
+                        } else {
+                            document.getElementById('albumArt').style.backgroundImage = 'none';
                         }
                         
                         // Update play/pause button
                         const playPauseBtn = document.getElementById('playPauseBtn');
-                        playPauseBtn.textContent = track.isPlaying ? '⏸' : '▶';
+                        if (playPauseBtn) {
+                            playPauseBtn.textContent = track.isPlaying ? '⏸' : '▶';
+                        }
+                        
+                        console.log('Mini player updated with track:', track.title, track.isPlaying ? '(Playing)' : '(Paused)');
+                    } else {
+                        // No track playing
+                        document.getElementById('trackTitle').textContent = 'No track playing';
+                        document.getElementById('trackArtist').textContent = 'YouTube Music';
+                        document.getElementById('albumArt').style.backgroundImage = 'none';
+                        
+                        const playPauseBtn = document.getElementById('playPauseBtn');
+                        if (playPauseBtn) {
+                            playPauseBtn.textContent = '▶';
+                        }
                     }
-                }).catch(console.error);
+                }
+            } catch (error) {
+                console.error('Error updating track info in mini player:', error);
+                document.getElementById('trackTitle').textContent = 'Unable to get track info';
+                document.getElementById('trackArtist').textContent = 'YouTube Music';
             }
         }
         
-        // Update every second
-        setInterval(updateTrackInfo, 1000);
-        updateTrackInfo();
+        // Update every 2 seconds
+        setInterval(updateTrackInfo, 2000);
+        // Initial update
+        setTimeout(updateTrackInfo, 1000);
     </script>
 </body>
 </html>

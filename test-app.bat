@@ -1,0 +1,6 @@
+@echo off
+echo Testing YouTube Music Desktop App...
+echo.
+echo Starting the application...
+cd /d "e:\Projects\YT music"
+npm start

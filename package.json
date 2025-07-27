@@ -1,9 +1,9 @@
 {
   "name": "youtube-music-desktop",
-  "version": "1.1.0",
-  "description": "Desktop app for YouTube Music with ad blocking and enhanced features",
+  "version": "1.2.0",
+  "description": "Enhanced YouTube Music Desktop App with Discord Rich Presence, Last.fm Scrobbling, Equalizer, and Advanced Features",
   "main": "main.js",
-  "homepage": "https://github.com/yourusername/youtube-music-desktop",
+  "homepage": "https://github.com/BLANK0104/YT-music",
   "author": {
     "name": "Utsav",
     "email": "utsavc317@gmail.com"
@@ -25,16 +25,61 @@
     "electron",
     "desktop-app",
     "music",
-    "ad-blocker",
-    "streaming"
+    "discord-rpc",
+    "lastfm-scrobbling",
+    "equalizer",
+    "audio-enhancement"
   ],
   "dependencies": {
+    "crypto": "^1.0.1",
+    "discord-rpc": "^4.0.1",
     "electron-store": "^8.2.0",
-    "electron-updater": "^6.6.2"
+    "electron-updater": "^6.6.2",
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "electron": "^37.2.4",
     "electron-builder": "^26.0.12",
     "electron-icon-builder": "^2.0.1"
+  },
+  "build": {
+    "appId": "com.utsav.youtube-music-desktop",
+    "productName": "YouTube Music Desktop Enhanced",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "proven-adblocker.js",
+      "advanced-adblocker.js",
+      "index.html",
+      "settings.html",
+      "mini-player.html",
+      "custom-ui.css",
+      "assets/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/512px-Youtube_Music_icon.svg.png"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/512px-Youtube_Music_icon.svg.png",
+      "category": "public.app-category.music"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/512px-Youtube_Music_icon.svg.png",
+      "category": "Audio"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
 }

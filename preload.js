@@ -7,11 +7,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
     playPause: () => ipcRenderer.invoke('media-play-pause'),
     nextTrack: () => ipcRenderer.invoke('media-next'),
     previousTrack: () => ipcRenderer.invoke('media-previous'),
+    mediaPlayPause: () => ipcRenderer.invoke('media-play-pause'),
+    mediaNext: () => ipcRenderer.invoke('media-next'),
+    mediaPrevious: () => ipcRenderer.invoke('media-previous'),
     
     // App controls
     minimize: () => ipcRenderer.invoke('window-minimize'),
     maximize: () => ipcRenderer.invoke('window-maximize'),
     close: () => ipcRenderer.invoke('window-close'),
+    closeWindow: () => ipcRenderer.invoke('window-close'),
     
     // Navigation
     goHome: () => ipcRenderer.invoke('navigate-home'),
@@ -28,6 +32,19 @@ contextBridge.exposeInMainWorld('electronAPI', {
     openMiniPlayer: () => ipcRenderer.invoke('open-mini-player'),
     toggleBackgroundPlay: (enabled) => ipcRenderer.invoke('toggle-background-play', enabled),
     
+    // Discord Rich Presence
+    initializeDiscordRPC: () => ipcRenderer.invoke('initialize-discord-rpc'),
+    destroyDiscordRPC: () => ipcRenderer.invoke('destroy-discord-rpc'),
+    
+    // Last.fm Scrobbling
+    initializeLastfm: () => ipcRenderer.invoke('initialize-lastfm'),
+    scrobbleTrack: (track) => ipcRenderer.invoke('scrobble-track', track),
+    
+    // Audio Enhancement
+    setupEqualizer: () => ipcRenderer.invoke('setup-equalizer'),
+    updateEqualizerBand: (band, value) => ipcRenderer.invoke('update-equalizer-band', band, value),
+    applyAudioEnhancement: (type, value) => ipcRenderer.invoke('apply-audio-enhancement', type, value),
+    
     // Track Management
     getCurrentTrack: () => ipcRenderer.invoke('get-current-track'),
     setCurrentTrack: (track) => ipcRenderer.invoke('set-current-track', track),
@@ -35,10 +52,97 @@ contextBridge.exposeInMainWorld('electronAPI', {
     
     // Theme and effects
     setTheme: (theme) => ipcRenderer.invoke('set-theme', theme),
-    getTheme: () => ipcRenderer.invoke('get-theme')
+    getTheme: () => ipcRenderer.invoke('get-theme'),
+    
+    // New Feature Controls
+    applyCustomTheme: (themeName) => ipcRenderer.invoke('apply-custom-theme', themeName),
+    setupVisualizer: () => ipcRenderer.invoke('setup-visualizer'),
+    destroyVisualizer: () => ipcRenderer.invoke('destroy-visualizer'),
+    applyHapticFeedback: (enabled) => ipcRenderer.invoke('apply-haptic-feedback', enabled),
+    applyAutoPause: (enabled) => ipcRenderer.invoke('apply-auto-pause', enabled),
+    applyGaplessPlayback: (enabled) => ipcRenderer.invoke('apply-gapless-playback', enabled)
 });
 
-// Basic YouTube Music integration functions
+// Enhanced YouTube Music tracking with feature integration
+let lastTrack = {};
+let trackStartTime = 0;
+let isTracking = false;
+
+// Start tracking when page loads
+window.addEventListener('DOMContentLoaded', () => {
+    console.log('🎵 YouTube Music tracker initialized');
+    startTrackingEnhancements();
+});
+
+function startTrackingEnhancements() {
+    if (isTracking) return;
+    isTracking = true;
+
+    // Track music changes every 2 seconds
+    setInterval(async () => {
+        try {
+            const currentTrack = window.ytMusic.getCurrentTrack();
+            
+            if (currentTrack && currentTrack.title) {
+                // Check if track changed
+                const trackChanged = lastTrack.title !== currentTrack.title || 
+                                   lastTrack.artist !== currentTrack.artist;
+
+                if (trackChanged) {
+                    console.log('🎵 Track changed:', currentTrack);
+                    
+                    // Set track start time
+                    trackStartTime = Date.now();
+                    
+                    // Update last track
+                    lastTrack = { ...currentTrack };
+                    
+                    // Notify main process
+                    await window.electronAPI.setCurrentTrack(currentTrack);
+                    
+                    // Show notification if enabled
+                    const settings = await window.electronAPI.getAllSettings();
+                    if (settings.desktopNotifications) {
+                        await window.electronAPI.showNotification(currentTrack);
+                    }
+                }
+
+                // Auto-scrobble after 30 seconds or 50% of track
+                const playTime = Date.now() - trackStartTime;
+                const shouldScrobble = currentTrack.isPlaying && 
+                                     (playTime > 30000 || 
+                                      (currentTrack.duration && playTime > currentTrack.duration * 0.5));
+
+                if (shouldScrobble && !lastTrack.scrobbled) {
+                    const settings = await window.electronAPI.getAllSettings();
+                    if (settings.lastfmScrobbling) {
+                        await window.electronAPI.scrobbleTrack(currentTrack);
+                        lastTrack.scrobbled = true;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error in track tracking:', error);
+        }
+    }, 2000);
+
+    // Monitor for audio context changes to integrate equalizer
+    const observer = new MutationObserver(async () => {
+        try {
+            const audioElements = document.querySelectorAll('audio, video');
+            if (audioElements.length > 0) {
+                const settings = await window.electronAPI.getAllSettings();
+                if (settings.equalizerEnabled) {
+                    await window.electronAPI.setupEqualizer();
+                }
+            }
+        } catch (error) {
+            console.error('Error setting up audio enhancements:', error);
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+}
 contextBridge.exposeInMainWorld('ytMusic', {
     // Enhanced current track info with comprehensive metadata
     getCurrentTrack: () => {
